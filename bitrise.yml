@@ -32,7 +32,7 @@ workflows:
       Used for updating Go dependencies with godep
     steps:
     - script:
-        title: Dependency update
+        title: godep update
         inputs:
         - content: |
             #!/bin/bash
@@ -43,7 +43,7 @@ workflows:
             rm -rf ./vendor
 
             go get -t -d ./...
-            # go get gopkg.in/yaml.v2
+            go get github.com/inconshreveable/mousetrap
             godep save ./...
   test:
     before_run:

@@ -1,0 +1,43 @@
+{
+	"ImportPath": "github.com/bitrise-tools/gotgen",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/colorstring",
+			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/fileutil",
+			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
+			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+		},
+		{
+			"ImportPath": "github.com/bitrise-io/go-utils/templateutil",
+			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+		},
+		{
+			"ImportPath": "github.com/inconshreveable/mousetrap",
+			"Rev": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+		},
+		{
+			"ImportPath": "github.com/pkg/errors",
+			"Comment": "v0.8.0-5-gc605e28",
+			"Rev": "c605e284fe17294bda444b34710735b29d1a9d90"
+		},
+		{
+			"ImportPath": "github.com/spf13/cobra",
+			"Rev": "e458bb7ab84aae1bb4b4d36eccf9332f0d659e38"
+		},
+		{
+			"ImportPath": "github.com/spf13/pflag",
+			"Rev": "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+		}
+	]
+}

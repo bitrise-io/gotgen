@@ -27,6 +27,10 @@ to quickly create a Cobra application.`,
 				"KeyTwo":  2,
 				"KeyBool": true,
 			},
+			Delimiter: configs.DelimiterModel{
+				Left:  "{{",
+				Right: "}}",
+			},
 		}
 
 		jsonCont, err := json.MarshalIndent(conf, "", "  ")

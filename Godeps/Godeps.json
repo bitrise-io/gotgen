@@ -8,19 +8,19 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/colorstring",
-			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/fileutil",
-			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
-			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/templateutil",
-			"Rev": "9c30a7825aa1064e423a0f1dba751fec990b07be"
+			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",

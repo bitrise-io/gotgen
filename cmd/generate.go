@@ -70,7 +70,10 @@ func generate(cmd *cobra.Command, args []string) error {
 			return errors.Wrapf(err, "Failed to read template content (path: %s)", aTemplatePth)
 		}
 
-		generatedContent, err := templateutil.EvaluateTemplateStringToString(templateCont, ggConf.Inventory, nil)
+		generatedContent, err := templateutil.EvaluateTemplateStringToStringWithDelimiter(
+			templateCont,
+			ggConf.Inventory, nil,
+			ggConf.Delimiter.Left, ggConf.Delimiter.Right)
 		if err != nil {
 			return errors.Wrapf(err, "Failed to generate file based on content (%s) - invalid content?", aTemplatePth)
 		}

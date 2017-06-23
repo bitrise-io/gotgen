@@ -36,6 +36,10 @@ Example `gg.conf.json` config file:
     "KeyBool": true,
     "KeyOne": "value for key one",
     "KeyTwo": 2
+  },
+  "delimiter": {
+    "left": "{{",
+    "right": "}}"
   }
 }
 ```

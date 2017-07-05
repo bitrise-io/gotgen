@@ -5,6 +5,7 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"encoding/json"
 
@@ -70,10 +71,11 @@ func generate(cmd *cobra.Command, args []string) error {
 			return errors.Wrapf(err, "Failed to read template content (path: %s)", aTemplatePth)
 		}
 
-		generatedContent, err := templateutil.EvaluateTemplateStringToStringWithDelimiter(
+		generatedContent, err := templateutil.EvaluateTemplateStringToStringWithDelimiterAndOpts(
 			templateCont,
-			ggConf.Inventory, nil,
-			ggConf.Delimiter.Left, ggConf.Delimiter.Right)
+			ggConf.Inventory, createAvailableTemplateFunctions(ggConf.Inventory),
+			ggConf.Delimiter.Left, ggConf.Delimiter.Right,
+			[]string{"missingkey=error"})
 		if err != nil {
 			return errors.Wrapf(err, "Failed to generate file based on content (%s) - invalid content?", aTemplatePth)
 		}
@@ -88,4 +90,16 @@ func generate(cmd *cobra.Command, args []string) error {
 	fmt.Println()
 
 	return nil
+}
+
+func createAvailableTemplateFunctions(inventory map[string]interface{}) template.FuncMap {
+	return template.FuncMap{
+		"var": func(key string) (interface{}, error) {
+			val, isFound := inventory[key]
+			if !isFound {
+				return "", fmt.Errorf("No value found for key: %s", key)
+			}
+			return val, nil
+		},
+	}
 }

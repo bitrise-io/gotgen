@@ -8,19 +8,19 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/colorstring",
-			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
+			"Rev": "3511af718c64f2ed4e0222e463e5889da972c0a0"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/fileutil",
-			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
+			"Rev": "3511af718c64f2ed4e0222e463e5889da972c0a0"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/pathutil",
-			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
+			"Rev": "3511af718c64f2ed4e0222e463e5889da972c0a0"
 		},
 		{
 			"ImportPath": "github.com/bitrise-io/go-utils/templateutil",
-			"Rev": "2bf26e59ba80fe2a2fd27055b5a4db8e9ec4d1c2"
+			"Rev": "3511af718c64f2ed4e0222e463e5889da972c0a0"
 		},
 		{
 			"ImportPath": "github.com/inconshreveable/mousetrap",
@@ -33,7 +33,7 @@
 		},
 		{
 			"ImportPath": "github.com/spf13/cobra",
-			"Rev": "e458bb7ab84aae1bb4b4d36eccf9332f0d659e38"
+			"Rev": "8c6fa02d2225de0f9bdcb7ca912556f68d172d8c"
 		},
 		{
 			"ImportPath": "github.com/spf13/pflag",

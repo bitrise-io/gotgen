@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -71,11 +72,7 @@ func generate(cmd *cobra.Command, args []string) error {
 			return errors.Wrapf(err, "Failed to read template content (path: %s)", aTemplatePth)
 		}
 
-		generatedContent, err := templateutil.EvaluateTemplateStringToStringWithDelimiterAndOpts(
-			templateCont,
-			ggConf.Inventory, createAvailableTemplateFunctions(ggConf.Inventory),
-			ggConf.Delimiter.Left, ggConf.Delimiter.Right,
-			[]string{"missingkey=error"})
+		generatedContent, err := generateContent(templateCont, ggConf.Inventory, ggConf.Delimiter.Left, ggConf.Delimiter.Right)
 		if err != nil {
 			return errors.Wrapf(err, "Failed to generate file based on content (%s) - invalid content?", aTemplatePth)
 		}
@@ -92,14 +89,35 @@ func generate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func generateContent(templateCont string, inventory map[string]interface{}, delimiterLeft, delimiterRight string) (string, error) {
+	generatedContent, err := templateutil.EvaluateTemplateStringToStringWithDelimiterAndOpts(
+		templateCont,
+		inventory, createAvailableTemplateFunctions(inventory),
+		delimiterLeft, delimiterRight,
+		[]string{"missingkey=error"})
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return generatedContent, nil
+}
+
 func createAvailableTemplateFunctions(inventory map[string]interface{}) template.FuncMap {
 	return template.FuncMap{
 		"var": func(key string) (interface{}, error) {
 			val, isFound := inventory[key]
 			if !isFound {
-				return "", fmt.Errorf("No value found for key: %s", key)
+				return "", errors.Errorf("No value found for key: %s", key)
 			}
 			return val, nil
+		},
+		"getenv": func(key string) string {
+			return os.Getenv(key)
+		},
+		"getenvRequired": func(key string) (string, error) {
+			if val := os.Getenv(key); len(val) > 0 {
+				return val, nil
+			}
+			return "", errors.Errorf("No environment variable value found for key: %s", key)
 		},
 	}
 }

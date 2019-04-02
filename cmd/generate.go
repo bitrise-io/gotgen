@@ -13,7 +13,7 @@ import (
 	"github.com/bitrise-io/go-utils/colorstring"
 	"github.com/bitrise-io/go-utils/fileutil"
 	"github.com/bitrise-io/go-utils/templateutil"
-	"github.com/bitrise-tools/gotgen/configs"
+	"github.com/bitrise-io/gotgen/configs"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

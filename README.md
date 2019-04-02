@@ -9,7 +9,7 @@ Minimalistic Go Template based Generator.
 Install:
 
 ```
-go get -u github.com/bitrise-tools/gotgen
+go get -u github.com/bitrise-io/gotgen
 ```
 
 Init:

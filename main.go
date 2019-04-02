@@ -1,6 +1,6 @@
 package main
 
-import "github.com/bitrise-tools/gotgen/cmd"
+import "github.com/bitrise-io/gotgen/cmd"
 
 func main() {
 	cmd.Execute()

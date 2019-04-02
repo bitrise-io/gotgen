@@ -1,4 +1,4 @@
-module github.com/bitrise-tools/gotgen
+module github.com/bitrise-io/gotgen
 
 require (
 	github.com/bitrise-io/go-utils v0.0.0-20181112170818-2a09aab8380d

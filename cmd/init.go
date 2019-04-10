@@ -26,6 +26,9 @@ to quickly create a Cobra application.`,
 				"KeyOne":  "value for key one",
 				"KeyTwo":  2,
 				"KeyBool": true,
+				"Nested": map[string]interface{}{
+					"Key1": "nested key 1",
+				},
 			},
 			Delimiter: configs.DelimiterModel{
 				Left:  "{{",
@@ -57,6 +60,7 @@ For example, if you run "gogen generate" now in this directory, the generated "e
 
 - KeyOne here: {{ var "KeyOne" }}
 - and KeyTwo here: {{ .KeyTwo }}
+- and Nested.Key1 here: {{ .Nested.Key1 }}
 
 And the following section will be showns based on KeyBool's value:
 

@@ -47,7 +47,10 @@ Example `gg.conf.json` config file:
   "inventory": {
     "KeyBool": true,
     "KeyOne": "value for key one",
-    "KeyTwo": 2
+    "KeyTwo": 2,
+    "Nested": {
+      "Key1": "nested key 1"
+    }
   },
   "delimiter": {
     "left": "{{",
@@ -69,6 +72,7 @@ For example, if you run "gogen generate" now in this directory, the generated "e
 
 - KeyOne here: {{ var "KeyOne" }}
 - and KeyTwo here: {{ .KeyTwo }}
+- and Nested.Key1 here: {{ .Nested.Key1 }}
 
 And the following section will be showns based on KeyBool's value:
 

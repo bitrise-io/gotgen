@@ -19,6 +19,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	ggTemplateFilePath = ""
+)
+
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate",
@@ -39,7 +43,7 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// generateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	generateCmd.Flags().StringVar(&ggTemplateFilePath, "file", "", ".gg file path - if specified only this single .gg file will be used as input, instead of scanning the whole directory for .gg files")
 }
 
 func generate(cmd *cobra.Command, args []string) error {
@@ -56,36 +60,55 @@ func generate(cmd *cobra.Command, args []string) error {
 	log.Println(colorstring.Green("[DONE] Reading GotGen config"))
 
 	//
-
-	fmt.Println()
-	log.Println(colorstring.Blue("Searching for templates and generaring files ..."))
-	fmt.Println()
-	templateFiles, err := filepath.Glob("*.gg")
-	if err != nil {
-		return errors.Wrap(err, "Failed to scan .gg template files")
+	var templateFiles []string
+	if len(ggTemplateFilePath) > 0 {
+		log.Println(colorstring.Blue("Using only the specified template file: " + ggTemplateFilePath))
+		templateFiles = []string{ggTemplateFilePath}
+	} else {
+		log.Println(colorstring.Blue("Searching for templates ..."))
+		files, err := filepath.Glob("*.gg")
+		if err != nil {
+			return errors.Wrap(err, "Failed to scan .gg template files")
+		}
+		templateFiles = files
 	}
+
+	if len(templateFiles) < 1 {
+		return errors.Errorf("No template file specified or found.")
+	}
+
+	log.Println(colorstring.Blue("Generating ..."))
+	fmt.Println()
 	for _, aTemplatePth := range templateFiles {
-		generatedFilePath := strings.TrimSuffix(aTemplatePth, ".gg")
-		fmt.Println(" * ", aTemplatePth, " => ", generatedFilePath)
-
-		templateCont, err := fileutil.ReadStringFromFile(aTemplatePth)
-		if err != nil {
-			return errors.Wrapf(err, "Failed to read template content (path: %s)", aTemplatePth)
+		if err := generateFileForTemplate(aTemplatePth, ggConf); err != nil {
+			return errors.WithStack(err)
 		}
-
-		generatedContent, err := generateContent(templateCont, ggConf.Inventory, ggConf.Delimiter.Left, ggConf.Delimiter.Right)
-		if err != nil {
-			return errors.Wrapf(err, "Failed to generate file based on content (%s) - invalid content?", aTemplatePth)
-		}
-
-		if err := fileutil.WriteStringToFile(generatedFilePath, generatedContent); err != nil {
-			return errors.Wrapf(err, "Failed to write generated content into file (to path: %s)", generatedFilePath)
-		}
-		fmt.Println("   ", colorstring.Green("[OK]"))
 	}
 	fmt.Println()
 	log.Println(colorstring.Green("[DONE] Searching for templates and generaring files"))
 	fmt.Println()
+
+	return nil
+}
+
+func generateFileForTemplate(templatePath string, ggconf configs.Model) error {
+	generatedFilePath := strings.TrimSuffix(templatePath, ".gg")
+	fmt.Println(" * ", templatePath, " => ", generatedFilePath)
+
+	templateCont, err := fileutil.ReadStringFromFile(templatePath)
+	if err != nil {
+		return errors.Wrapf(err, "Failed to read template content (path: %s)", templatePath)
+	}
+
+	generatedContent, err := generateContent(templateCont, ggconf.Inventory, ggconf.Delimiter.Left, ggconf.Delimiter.Right)
+	if err != nil {
+		return errors.Wrapf(err, "Failed to generate file based on content (%s) - invalid content?", templatePath)
+	}
+
+	if err := fileutil.WriteStringToFile(generatedFilePath, generatedContent); err != nil {
+		return errors.Wrapf(err, "Failed to write generated content into file (to path: %s)", generatedFilePath)
+	}
+	fmt.Println("   ", colorstring.Green("[OK]"))
 
 	return nil
 }

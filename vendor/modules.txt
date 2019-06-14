@@ -1,10 +1,10 @@
-# github.com/bitrise-io/go-utils v0.0.0-20181112170818-2a09aab8380d
+# github.com/bitrise-io/go-utils v0.0.0-20190613135528-7a4402b387eb
 github.com/bitrise-io/go-utils/colorstring
 github.com/bitrise-io/go-utils/fileutil
 github.com/bitrise-io/go-utils/templateutil
 github.com/bitrise-io/go-utils/pathutil
 github.com/bitrise-io/go-utils/envutil
-# github.com/davecgh/go-spew v1.1.0
+# github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
@@ -12,7 +12,7 @@ github.com/inconshreveable/mousetrap
 github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/spf13/cobra v0.0.3
+# github.com/spf13/cobra v0.0.5
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.3
 github.com/spf13/pflag

@@ -1,31 +1,23 @@
-format_version: "3"
+format_version: "8"
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: ""
+app:
+  envs:
+  - GOFLAGS: -mod=vendor
+    opts:
+      description: |
+        Since Go 1.12 vendoring is an opt-in feature when working outside of GOPATH.
+        You can enable it via the `-mod=vendor` flag or specifying that as a `GOFLAGS` env var.
+        More info https://github.com/golang/go/wiki/Modules#how-do-i-use-vendoring-with-modules-is-vendoring-going-away
+      is_expand: false
+      title: Opt-in vendoring
 workflows:
-  _install_testing_tools:
-    title: Install testing tools
+  build:
     steps:
     - script:
-        title: Install testing tools
-        run_if: .IsCI
+        title: Go build
         inputs:
-        - content: |-
-            #!/bin/bash
-            set -ex
-
-            # Install dependencies
-            go get -u github.com/tools/godep
-
-            # Check for unhandled errors
-            go get -u github.com/kisielk/errcheck
-
-            # Go lint
-            go get -u github.com/golang/lint/golint
-
-            # Check for unused constants, variables, functions and types
-            go get -u honnef.co/go/tools/cmd/unused
-
-            # Search for what could be simplified
-            go get -u honnef.co/go/tools/cmd/gosimple
+        - content: go build
   deps-update:
     title: Godeps update
     description: |
@@ -37,74 +29,34 @@ workflows:
         - content: |
             #!/bin/bash
             set -ex
-            go get -u -v github.com/tools/godep
 
-            rm -rf ./Godeps
             rm -rf ./vendor
+            rm go.mod
+            rm go.sum
 
-            go get -t -d ./...
-            go get github.com/inconshreveable/mousetrap
-            godep save ./...
+            go mod init
+            go mod tidy
+            go mod vendor
   test:
-    before_run:
-    - _install_testing_tools
     steps:
     - script:
-        title: Print go environment
+        title: Install test/lint tools
         inputs:
         - content: |-
-            #!/bin/bash
-            set -x
-            go version
-    - script:
-        title: Export go files to test
-        inputs:
-        - content: |-
-            #!/bin/bash
+            #!/usr/bin/env bash
             set -ex
-            no_vendor_paths="$(go list ./... | grep -v vendor)"
-            envman add --key GOLIST_WITHOUT_VENDOR --value "$no_vendor_paths"
-    - script:
-        title: Err check
-        inputs:
-        - content: errcheck -asserts=true -blank=true $GOLIST_WITHOUT_VENDOR
-    - script:
-        title: Go lint
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -e
-            while read -r line; do
-              echo "-> Linting: $line"
-              golint_out="$(golint $line)"
-              if [[ "${golint_out}" != "" ]] ; then
-                echo "=> Golint issues found:"
-                echo "${golint_out}"
-                exit 1
-              fi
-            done <<< "$GOLIST_WITHOUT_VENDOR"
-    - script:
-        title: Search for unused constants, variables, functions and types
-        inputs:
-        - content: |-
-            #!/bin/bash
-            unused_out=$(for pkg in $(go list ./... | grep -v vendor); do unused "$pkg"; done)
-            if [[ "${unused_out}" != "" ]] ; then
-              echo "=> Unused output:"
-              echo "${unused_out}"
-              exit 1
-            fi
-    - script:
-        title: Run gosimple
-        inputs:
-        - content: |-
-            #!/bin/bash
-            gosimple_out=$(for pkg in $(go list ./... | grep -v vendor); do gosimple "$pkg"; done)
-            if [[ "${gosimple_out}" != "" ]] ; then
-              echo "=> gosimple output:"
-              echo "${gosimple_out}"
-              exit 1
-            fi
+
+            # disable GOFLAGS otherwise you'll get an error like:
+            #  Failed to install golint: go get: disabled by -mod=vendor
+            export GOFLAGS=""
+            # also cd to a temp dir so that "go get" installs the tool **outside** this go module
+            cd /tmp
+
+            go "get" "-u" "golang.org/x/lint/golint"
+            go "get" "-u" "github.com/kisielk/errcheck"
+    - go-list: {}
+    - golint: {}
+    - errcheck: {}
     - script:
         title: Go test
         inputs:

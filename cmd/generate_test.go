@@ -95,7 +95,7 @@ func Test_generateContent(t *testing.T) {
 			map[string]interface{}{"KeyOne": "Value 1"},
 			"{{", "}}",
 		)
-		require.EqualError(t, err, `template: :1:8: executing "" at <getenvRequired "Test...>: error calling getenvRequired: No environment variable value found for key: Test_generateContent_KEY_2`)
+		require.EqualError(t, err, "template: :1:8: executing \"\" at <getenvRequired \"Test_generateContent_KEY_2\">: error calling getenvRequired: No environment variable value found for key: Test_generateContent_KEY_2")
 		require.Equal(t, ``, genCont)
 	}
 }

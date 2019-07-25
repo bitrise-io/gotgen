@@ -20,7 +20,8 @@ import (
 )
 
 var (
-	ggTemplateFilePath = ""
+	ggTemplateFilePathFlag = ""
+	outputFilePathFlag     = ""
 )
 
 // generateCmd represents the generate command
@@ -43,7 +44,8 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	generateCmd.Flags().StringVar(&ggTemplateFilePath, "file", "", ".gg file path - if specified only this single .gg file will be used as input, instead of scanning the whole directory for .gg files")
+	generateCmd.Flags().StringVar(&ggTemplateFilePathFlag, "file", "", ".gg file path - if specified only this single .gg file will be used as input, instead of scanning the whole directory for .gg files")
+	generateCmd.Flags().StringVar(&outputFilePathFlag, "out-file-path", "", "Output file path")
 }
 
 func generate(cmd *cobra.Command, args []string) error {
@@ -60,17 +62,26 @@ func generate(cmd *cobra.Command, args []string) error {
 	log.Println(colorstring.Green("[DONE] Reading GotGen config"))
 
 	//
-	var templateFiles []string
-	if len(ggTemplateFilePath) > 0 {
-		log.Println(colorstring.Blue("Using only the specified template file: " + ggTemplateFilePath))
-		templateFiles = []string{ggTemplateFilePath}
+	templateFiles := map[string]string{}
+	if len(ggTemplateFilePathFlag) > 0 {
+		log.Println(colorstring.Blue("Using only the specified template file: " + ggTemplateFilePathFlag))
+		oFilePth := outputFilePathFlag
+		if len(oFilePth) < 1 {
+			if !strings.HasSuffix(ggTemplateFilePathFlag, ".gg") {
+				return errors.Errorf("If you specify an input file path that either has to be a .gg file (.gg extension) or also specify the out-file-path option to specify where the generated output should be stored")
+			}
+			oFilePth = strings.TrimSuffix(ggTemplateFilePathFlag, ".gg")
+		}
+		templateFiles[ggTemplateFilePathFlag] = oFilePth
 	} else {
 		log.Println(colorstring.Blue("Searching for templates ..."))
 		files, err := filepath.Glob("*.gg")
 		if err != nil {
 			return errors.Wrap(err, "Failed to scan .gg template files")
 		}
-		templateFiles = files
+		for _, aFilePath := range files {
+			templateFiles[aFilePath] = strings.TrimSuffix(aFilePath, ".gg")
+		}
 	}
 
 	if len(templateFiles) < 1 {
@@ -79,8 +90,8 @@ func generate(cmd *cobra.Command, args []string) error {
 
 	log.Println(colorstring.Blue("Generating ..."))
 	fmt.Println()
-	for _, aTemplatePth := range templateFiles {
-		if err := generateFileForTemplate(aTemplatePth, ggConf); err != nil {
+	for aTemplatePth, aOutputFilePath := range templateFiles {
+		if err := generateFileForTemplate(aTemplatePth, aOutputFilePath, ggConf); err != nil {
 			return errors.WithStack(err)
 		}
 	}
@@ -91,8 +102,7 @@ func generate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func generateFileForTemplate(templatePath string, ggconf configs.Model) error {
-	generatedFilePath := strings.TrimSuffix(templatePath, ".gg")
+func generateFileForTemplate(templatePath, generatedFilePath string, ggconf configs.Model) error {
 	fmt.Println(" * ", templatePath, " => ", generatedFilePath)
 
 	templateCont, err := fileutil.ReadStringFromFile(templatePath)

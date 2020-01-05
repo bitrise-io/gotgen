@@ -96,7 +96,7 @@ func generate(cmd *cobra.Command, args []string) error {
 		}
 	}
 	fmt.Println()
-	log.Println(colorstring.Green("[DONE] Searching for templates and generaring files"))
+	log.Println(colorstring.Green("[DONE] Searching for templates and generating files"))
 	fmt.Println()
 
 	return nil

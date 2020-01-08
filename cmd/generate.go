@@ -17,6 +17,7 @@ import (
 	"github.com/bitrise-io/gotgen/configs"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -153,12 +154,37 @@ func createAvailableTemplateFunctions(inventory map[string]interface{}) template
 			}
 			return "", errors.Errorf("No environment variable value found for key: %s", key)
 		},
-		"add":      add,
-		"subtract": subtract,
-		"multiply": multiply,
-		"divide":   divide,
-		"modulo":   modulo,
+		"yaml":             yamlFn,
+		"indentWithSpaces": indentWithSpaces,
+		"add":              add,
+		"subtract":         subtract,
+		"multiply":         multiply,
+		"divide":           divide,
+		"modulo":           modulo,
 	}
+}
+
+// ------------------------------------------------------------
+// Utilify functions
+// ------------------------------------------------------------
+
+func yamlFn(obj interface{}) (string, error) {
+	bytes, err := yaml.Marshal(obj)
+	if err != nil {
+		return "", errors.Errorf("Failed to generate yaml for object, error: %s", err)
+	}
+	return string(bytes), nil
+}
+
+func indentWithSpaces(indentSpaceCharCount int, s string) string {
+	if len(s) < 1 {
+		return ""
+	}
+
+	indentationString := strings.Repeat(" ", indentSpaceCharCount)
+
+	lines := strings.SplitAfter(s, "\n")
+	return indentationString + strings.Join(lines, indentationString)
 }
 
 // ------------------------------------------------------------

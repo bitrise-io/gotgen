@@ -27,7 +27,9 @@ to quickly create a Cobra application.`,
 				"KeyTwo":  2,
 				"KeyBool": true,
 				"Nested": map[string]interface{}{
-					"Key1": "nested key 1",
+					"KeyA": map[string]interface{}{
+						"Key1": "KeyA-Key1 value",
+					},
 				},
 			},
 			Delimiter: configs.DelimiterModel{
@@ -60,7 +62,7 @@ For example, if you run "gogen generate" now in this directory, the generated "e
 
 - KeyOne here: {{ var "KeyOne" }}
 - and KeyTwo here: {{ .KeyTwo }}
-- and Nested.Key1 here: {{ .Nested.Key1 }}
+- and Nested.KeyA.Key1 here: {{ .Nested.KeyA.Key1 }}
 
 And the following section will be showns based on KeyBool's value:
 
@@ -69,6 +71,19 @@ And the following section will be showns based on KeyBool's value:
 Environment variables can also be included, with {{ getenv "ENV_VAR_KEY" }},
 which will result in an empty string if ENV_VAR_KEY is not set. If you want the template
 to fail if the env var isn't set use getenvRequired instead.
+
+Inline yaml embedding:
+{{ .Nested | yaml }}
+
+Indentation:
+{{ "a\nb\n" | indentWithSpaces 4 }}
+
+Some math:
+add: {{ 6 | add 2 }}
+subtract: {{ 6 | subtract 2 }}
+multiply: {{ 6 | multiply 2 }}
+divide: {{ 6 | divide 2 }}
+modulo: {{ 6 | modulo 2 }}
 
 That's all you need to know.
 

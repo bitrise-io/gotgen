@@ -99,3 +99,60 @@ func Test_generateContent(t *testing.T) {
 		require.Equal(t, ``, genCont)
 	}
 }
+
+func Test_indentWithSpaces(t *testing.T) {
+	require.Equal(t, "", indentWithSpaces(2, ""), "Empty string should result in an empty string")
+
+	require.Equal(t, "  a", indentWithSpaces(2, "a"))
+
+	t.Log("Multiline test")
+	{
+		orig := `a
+b
+ c`
+		expected := `  a
+  b
+   c`
+		require.Equal(t, expected, indentWithSpaces(2, orig))
+	}
+
+	t.Log("Multiline test - ending with newline at the end")
+	{
+		orig := `a
+b
+ c
+`
+		expected := `  a
+  b
+   c
+  `
+		require.Equal(t, expected, indentWithSpaces(2, orig))
+	}
+}
+
+func Test_yaml(t *testing.T) {
+	t.Log("Simple no error")
+	{
+		obj := map[string]string{"key1": "value one"}
+		expected := "key1: value one\n"
+
+		s, err := yamlFn(obj)
+		require.NoError(t, err)
+		require.Equal(t, expected, s)
+	}
+
+	t.Log("Simple error")
+	{
+		// I don't know any way to make `yaml.Marshal` to return an error
+	}
+
+	t.Log("More complex - multiline")
+	{
+		obj := map[string]interface{}{"key1": "value one", "key2": 2}
+		expected := "key1: value one\nkey2: 2\n"
+
+		s, err := yamlFn(obj)
+		require.NoError(t, err)
+		require.Equal(t, expected, s)
+	}
+}
